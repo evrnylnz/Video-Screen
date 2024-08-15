@@ -16,7 +16,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewDidLoad() {
         
-        
         startPlaneDetection()
         startTapDetection()
         arView.isUserInteractionEnabled = true
@@ -32,7 +31,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         configuration.isAutoFocusEnabled = true
 
         arView.session.run(configuration)
-        print("it worked")
         
     }
     
@@ -44,7 +42,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     
     @objc func handleTap(recognizer: UITapGestureRecognizer){
-        print("31")
         let tapLocation = recognizer.location(in: arView)
         
         let results = arView.raycast(from: tapLocation, allowing: .estimatedPlane, alignment: .horizontal)
@@ -53,14 +50,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             
             let worldPosition = simd_make_float3(firtResult.worldTransform.columns.3)
-            
-            let videoScreen = createVideoScreen(width: 0.5, height: 0.3)
-            videoScreen.setPosition(SIMD3(x: 0, y: 0.3/2, z: 0), relativeTo: videoScreen)
+            let width: Float = 0.5
+            let height: Float = 0.3
+            let videoScreen = createVideoScreen(width: width, height: height)
+            videoScreen.setPosition(SIMD3(x: 0, y: height/2, z: 0), relativeTo: videoScreen)
             
             placeScreen(screen: videoScreen, worldPosition: worldPosition)
             
             installGestures(on: videoScreen)
-            print("i worked")
         }
     }
     
@@ -76,7 +73,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func installGestures(on model: ModelEntity) {
         
         model.generateCollisionShapes(recursive: true)
-        arView.installGestures([.rotation, .scale], for: model)
+        arView.installGestures([.rotation, .scale, .translation], for: model)
     }
     // MARK: - Video Screen
     
